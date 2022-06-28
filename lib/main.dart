@@ -28,7 +28,7 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
   int _tabIndex = 0;
 
-  static const List<Widget> _tabOptions = <Widget>[
+  static const List<Widget> _tabContent = <Widget>[
     CalendarScreen(),
     InsightsScreen(),
     SettingsScreen(),
@@ -54,7 +54,7 @@ class _RootPageState extends State<RootPage> {
             )
           : null,
       body: Center(
-        child: _tabOptions.elementAt(_tabIndex),
+        child: _tabContent.elementAt(_tabIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
@@ -90,58 +90,114 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
+class AboutPage extends StatelessWidget {
+  const AboutPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("About"),
+        backgroundColor: Colors.black,
+        centerTitle: true,
+      ),
+      body: const Text("This represents the about page"),
+    );
+  }
+}
+
+class CanaryPage extends StatelessWidget {
+  const CanaryPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Canary"),
+        backgroundColor: Colors.black,
+        centerTitle: true,
+      ),
+      body: const Text("This represents the canary page"),
+    );
+  }
+}
+
+class DisclaimersPage extends StatelessWidget {
+  const DisclaimersPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Disclaimers"),
+        backgroundColor: Colors.black,
+        centerTitle: true,
+      ),
+      body: const Text("This represents the disclaimers page"),
+    );
+  }
+}
+
 class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(10.0),
       children: const [
-        ListTile(
-          title: Text(
-            'About yours',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            color: Colors.black,
-            semanticLabel: 'Select',
-          ),
+        SettingsItem(
+          settingName: "About",
+          pagePath: AboutPage(),
         ),
         Divider(thickness: 3),
-        ListTile(
-          title: Text(
-            'Canary',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            color: Colors.black,
-            semanticLabel: 'Select',
-          ),
+        SettingsItem(
+          settingName: "Canary",
+          pagePath: CanaryPage(),
         ),
         Divider(thickness: 3),
-        ListTile(
-          title: Text(
-            'Disclaimers',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            color: Colors.black,
-            semanticLabel: 'Select',
-          ),
+        SettingsItem(
+          settingName: "Disclaimers",
+          pagePath: DisclaimersPage(),
         ),
         Divider(thickness: 3),
       ],
+    );
+  }
+}
+
+class SettingsItem extends StatelessWidget {
+  final String settingName;
+  final Widget pagePath;
+  //onclick function;
+
+  const SettingsItem({
+    Key? key,
+    required this.settingName,
+    required this.pagePath,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(
+        settingName,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        color: Colors.black,
+        semanticLabel: 'Select',
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => pagePath,
+          ),
+        );
+      },
     );
   }
 }
