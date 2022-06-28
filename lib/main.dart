@@ -101,7 +101,9 @@ class AboutPage extends StatelessWidget {
         backgroundColor: Colors.black,
         centerTitle: true,
       ),
-      body: const Text("This represents the about page"),
+      body: const Center(
+        child: Text("This represents the about page"),
+      ),
     );
   }
 }
@@ -117,7 +119,9 @@ class CanaryPage extends StatelessWidget {
         backgroundColor: Colors.black,
         centerTitle: true,
       ),
-      body: const Text("This represents the canary page"),
+      body: const Center(
+        child: Text("This represents the canary page"),
+      ),
     );
   }
 }
@@ -133,7 +137,9 @@ class DisclaimersPage extends StatelessWidget {
         backgroundColor: Colors.black,
         centerTitle: true,
       ),
-      body: const Text("This represents the disclaimers page"),
+      body: const Center(
+        child: Text("This represents the disclaimers page"),
+      ),
     );
   }
 }
@@ -194,6 +200,7 @@ class SettingsItem extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
+            // TODO this transition sucks. we should make it go left/right instead of in/out
             builder: (_) => pagePath,
           ),
         );
@@ -314,15 +321,55 @@ class _InsightsScreenState extends State<InsightsScreen> {
   }
 }
 
-class CalendarScreen extends StatelessWidget {
+class CalendarScreen extends StatefulWidget {
   const CalendarScreen({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<CalendarScreen> createState() => _CalendarScreenState();
+}
+
+class _CalendarScreenState extends State<CalendarScreen> {
+  @override
   Widget build(BuildContext context) {
-    return const Text(
-      'Calendar',
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AddDataForm(),
+            ),
+          );
+        },
+        backgroundColor: Colors.black,
+        child: const Icon(Icons.add),
+      ),
+      body: const Center(child: Text('Calendar')),
+    );
+  }
+}
+
+class AddDataForm extends StatefulWidget {
+  const AddDataForm({Key? key}) : super(key: key);
+
+  @override
+  State<AddDataForm> createState() => _AddDataFormState();
+}
+
+class _AddDataFormState extends State<AddDataForm> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Add data point"),
+        centerTitle: true,
+        backgroundColor: Colors.black,
+      ),
+      body: const Center(
+        child: Text("Placeholder for new event form"),
+      ),
     );
   }
 }
