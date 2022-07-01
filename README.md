@@ -32,11 +32,7 @@ Suggestions? Bug report? Need someone to vent to? Email us at x at y dot z
 
 ## Canary
 
-The presence of this statement indicates that we have *not* received a government subpoena or warrant where we are legally prohibited from disclosing the existence of such a subpoena or warrant.
-
-Watch for the removal of this statement.
-
-Last update: 6/27/2022
+Canary can be found here: https://github.com/Yours-App/canary
 
 ***
 
