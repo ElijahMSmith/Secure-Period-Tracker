@@ -25,18 +25,19 @@ class YoursApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: _title,
       home: FutureBuilder<bool>(
-          future: showOnboardingPage(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              // I **KNOW** that this looks stupid af, but you can't use snapshot.data as a conditional for null safety
-              if (snapshot.data != false) {
-                return const OnboardingPage(); // go to onboarding page
-              }
-              return const HomePages(); // TODO goes to home now but make it go to login later
-            } else {
-              return const SplashScreen();
+        future: showOnboardingPage(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            // I **KNOW** that this looks stupid af, but you can't use snapshot.data as a conditional for null safety
+            if (snapshot.data != false) {
+              return const OnboardingPage(); // go to onboarding page
             }
-          }),
+            return const HomePages(); // TODO goes to home now but make it go to login later
+          } else {
+            return const SplashScreen();
+          }
+        },
+      ),
     );
   }
 }

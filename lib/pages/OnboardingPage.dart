@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'HomePages.dart';
+import 'RegistrationForm.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({Key? key}) : super(key: key);
@@ -11,11 +11,18 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage> {
   void _onOnboardingEnd(context) {
-    Navigator.of(context).pushAndRemoveUntil(
+    /*Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute<void>(
         builder: (_) => const HomePages(), // TODO this is going to home rn but switch this to the reg screen
       ),
       (route) => false,
+    );*/
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const RegistrationPage(),
+      ),
     );
   }
 
