@@ -29,7 +29,7 @@ class _LoginLoadingPageState extends State<LoginLoadingPage> {
         } else if(snapshot.data == true) {
           return const HomePages();
         } else {
-          return Container(color: Colors.red,);
+          return const LoginPage(isError: true);
         }
       },
     );
@@ -84,7 +84,9 @@ Future<bool> _checkPinHash(String pin) async {
 }
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key}) : super(key: key);
+  final bool isError;
+
+  const LoginForm({Key? key, required this.isError}) : super(key: key);
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -125,6 +127,9 @@ class _LoginFormState extends State<LoginForm> {
               onFieldSubmitted: (value) {
                 _submitLogin(_formKey, context, _pin.text);
               },
+              decoration: InputDecoration(
+                errorText: widget.isError ? "Incorrect PIN. Please try again." : null,
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -140,7 +145,9 @@ class _LoginFormState extends State<LoginForm> {
 }
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final bool isError;
+
+  const LoginPage({Key? key, required this.isError}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -149,8 +156,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: LoginForm(),
+    return Scaffold(
+      body: LoginForm(isError: widget.isError),
     );
   }
 }
