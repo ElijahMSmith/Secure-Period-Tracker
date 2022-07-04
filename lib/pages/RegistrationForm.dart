@@ -60,7 +60,7 @@ Future<Map> _calculateEncryptionValues(String pin) async {
   return values;
 }
 
-Future<bool> _registerPIN(String pin) async {
+Future<String> _registerPIN(String pin) async {
   final encryptionValues = await compute(_calculateEncryptionValues, pin);
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -75,56 +75,8 @@ Future<bool> _registerPIN(String pin) async {
   prefs.setString("randKeyMAC", encryptionValues["randKeyMAC"]);
 
   prefs.setBool("onboarded", true);
-  /* --------------------- */
-  // this section is simulating a user login. TESTING ONLY! REMOVE LATER!
-  /*String userEnteredPin = "test";
 
-  final loginKeyGen = Pbkdf2(
-    macAlgorithm: Hmac.sha512(),
-    iterations: 200000,
-    bits: 256,
-  );
-
-  final SecretKey loginPinBytes = SecretKey(utf8.encode(pin));
-
-  final String loginSaltString = prefs.getString("salt").toString();
-  final SecretKey loginSalt = SecretKey(hex.decode(loginSaltString));
-
-  final loginUserKey = await loginKeyGen.deriveKey(
-    secretKey: loginPinBytes,
-    nonce: await loginSalt.extractBytes(),
-  );
-
-  final loginSha512 = Sha512();
-  final loginHashedUserKey =
-      await loginSha512.hash(await loginUserKey.extractBytes());
-  final storedHashedUserKey = prefs.getString("hashedUserKey").toString();
-
-  assert(hex.encode(loginHashedUserKey.bytes).hashCode ==
-      storedHashedUserKey.hashCode);
-
-  final storedRandKeyCipherText =
-      hex.decode(prefs.getString("randKeyCipherText").toString());
-  final storedRandKeyNonce =
-      hex.decode(prefs.getString("randKeyNonce").toString());
-  final storedRandKeyMAC = hex.decode(prefs.getString("randKeyMAC").toString());
-
-  final storedBox = SecretBox(
-    storedRandKeyCipherText,
-    nonce: storedRandKeyNonce,
-    mac: Mac(storedRandKeyMAC),
-  );
-
-  final loginAES = AesGcm.with256bits();
-
-  final clearText = await loginAES.decrypt(storedBox, secretKey: loginUserKey);
-  final clearTextStr = hex.encode(clearText);
-  assert(clearTextStr.hashCode == randKeyBytesHexStr.hashCode);*/
-  /* --------------------- */
-
-  //await Future.delayed(const Duration(seconds: 5));
-
-  return true;
+  return encryptionValues["randKey"];
 }
 
 class RegistrationLoadingPage extends StatefulWidget {
@@ -147,7 +99,7 @@ class _RegistrationLoadingPageState extends State<RegistrationLoadingPage> {
         if (snapshot.data == null) {
           return const SplashScreen();
         } else {
-          return const HomePages();
+          return HomePages(sqlKey: snapshot.data.toString());
         }
       },
     );

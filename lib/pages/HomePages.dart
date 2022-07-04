@@ -5,7 +5,9 @@ import 'InsightsTab.dart';
 import 'SettingsTab.dart';
 
 class HomePages extends StatefulWidget {
-  const HomePages({Key? key}) : super(key: key);
+  final String sqlKey;
+
+  const HomePages({Key? key, required this.sqlKey}) : super(key: key);
 
   @override
   State<HomePages> createState() => _HomePagesState();

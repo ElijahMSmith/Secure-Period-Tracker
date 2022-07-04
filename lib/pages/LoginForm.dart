@@ -26,8 +26,8 @@ class _LoginLoadingPageState extends State<LoginLoadingPage> {
       builder: (context, snapshot) {
         if(snapshot.data == null) {
           return const SplashScreen();
-        } else if(snapshot.data == true) {
-          return const HomePages();
+        } else if(snapshot.data != "") {
+          return HomePages(sqlKey: snapshot.data.toString(),);
         } else {
           return const LoginPage(isError: true);
         }
@@ -45,7 +45,9 @@ void _submitLogin(GlobalKey<FormState> key, BuildContext context, String pin) {
   }
 }
 
-Future<String> _calculatePinHash (HashMap values) async {
+Future<HashMap> _calculatePinHash (HashMap values) async {
+  HashMap results = HashMap();
+
   final SecretKey pinBytes = SecretKey(utf8.encode(values["pin"]));
 
   final pdkdf2 = Pbkdf2(
@@ -64,23 +66,44 @@ Future<String> _calculatePinHash (HashMap values) async {
   final sha512 = Sha512();
   final hashedPinKey = await sha512.hash(await pinKey.extractBytes());
 
-  return hex.encode(hashedPinKey.bytes);
+  results["hash"] = hex.encode(hashedPinKey.bytes);
+  results["userKey"] = pinKey;
+  return results;
+}
+
+Future<String> _getRandKey(HashMap inputs) async {
+  final storedBox = SecretBox(
+    hex.decode(inputs["cipherText"]),
+    nonce: hex.decode(inputs["nonce"]),
+    mac: Mac(hex.decode(inputs["mac"])),
+  );
+
+  final loginAES = AesGcm.with256bits();
+  return hex.encode(await loginAES.decrypt(storedBox, secretKey: inputs["userKey"]));
 }
 
 // returns true if match, false if not
-Future<bool> _checkPinHash(String pin) async {
+Future<String> _checkPinHash(String pin) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   HashMap values = HashMap();
   values["pin"] = pin;
   values["salt"] = prefs.getString("salt")!;
 
-  final hashedPinKey = await compute(_calculatePinHash, values);
+  final HashMap results = await compute(_calculatePinHash, values);
   final storedHashedUserKey = prefs.getString("hashedUserKey")!;
 
-  final result = hashedPinKey == storedHashedUserKey;
+  if (results["hash"] != storedHashedUserKey) {
+    return "";
+  }
 
-  return result;
+  values.clear();
+  values["userKey"] = results["userKey"];
+  values["cipherText"] = prefs.getString("randKeyCipherText");
+  values["nonce"] = prefs.getString("randKeyNonce");
+  values["mac"] = prefs.getString("randKeyMAC");
+
+  return await compute(_getRandKey, values);
 }
 
 class LoginForm extends StatefulWidget {
