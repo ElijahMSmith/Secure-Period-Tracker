@@ -1,35 +1,37 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
 import 'package:convert/convert.dart';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cryptography/cryptography.dart';
+
 import 'HomePages.dart';
 import 'SplashScreen.dart';
 
-Future<bool> _registerPIN(String pin) async {
-  /*SharedPreferences prefs = await SharedPreferences.getInstance();
+Future<Map> _calculateEncryptionValues(String pin) async {
+  HashMap values = HashMap();
 
   // this should give us 256 bits? someone check my math
   final SecretKey randKey = SecretKey(
       List<int>.generate(32, (index) => Random.secure().nextInt(255)));
-  final randKeyBytesHexStr = hex.encode(await randKey.extractBytes());
-  // TODO create sqflite_sqlcipher here with randKeyBytesHexStr
+  final String randKeyStr = hex.encode(await randKey.extractBytes());
+  values.putIfAbsent("randKey", () => randKeyStr);
 
   // utf8 or ascii here? I guess utf8 gives us a bigger PIN space?
   final SecretKey pinBytes = SecretKey(utf8.encode(pin));
 
   final pbkdf2 = Pbkdf2(
     macAlgorithm: Hmac.sha512(),
-    // iterations has to be at least 100000 for reasonable security. we can adjust later based on time data
-    iterations: 200000,
+    iterations: 150000,
     bits: 256,
   );
 
-  // NIST standards say that the salt should be at least 16 bytes
-  final SecretKey salt = SecretKey(List<int>.filled(16, 0));
-  prefs.setString("salt", hex.encode(await salt.extractBytes()));
+  final SecretKey salt = SecretKey(
+      List<int>.generate(16, (index) => Random.secure().nextInt(255)));
+  final String saltStr = hex.encode(await salt.extractBytes());
+  values.putIfAbsent("salt", () => saltStr);
 
   final userKey = await pbkdf2.deriveKey(
     secretKey: pinBytes,
@@ -38,7 +40,8 @@ Future<bool> _registerPIN(String pin) async {
 
   final sha512 = Sha512();
   final hashedUserKey = await sha512.hash(await userKey.extractBytes());
-  prefs.setString("hashedUserKey", hex.encode(hashedUserKey.bytes));
+  final String hashedUserKeyStr = hex.encode(hashedUserKey.bytes);
+  values.putIfAbsent("hashedUserKey", () => hashedUserKeyStr);
 
   final aes256 = AesGcm.with256bits();
   final aesNonce = aes256.newNonce();
@@ -48,10 +51,30 @@ Future<bool> _registerPIN(String pin) async {
     secretKey: userKey,
     nonce: aesNonce,
   );
-  prefs.setString("randKeyCipherText", hex.encode(encryptedRandKey.cipherText));
-  prefs.setString("randKeyNonce", hex.encode(encryptedRandKey.nonce));
-  prefs.setString("randKeyMAC", hex.encode(encryptedRandKey.mac.bytes));*/
+  values.putIfAbsent(
+      "randKeyCipherText", () => hex.encode(encryptedRandKey.cipherText));
+  values.putIfAbsent("randKeyNonce", () => hex.encode(encryptedRandKey.nonce));
+  values.putIfAbsent(
+      "randKeyMAC", () => hex.encode(encryptedRandKey.mac.bytes));
 
+  return values;
+}
+
+Future<bool> _registerPIN(String pin) async {
+  final encryptionValues = await compute(_calculateEncryptionValues, pin);
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  final randKeyBytesStr = encryptionValues["randKey"];
+  // TODO create sqflite_sqlcipher here with randKeyBytesStr
+
+  prefs.setString("salt", encryptionValues["salt"]);
+  prefs.setString("hashedUserKey", encryptionValues["hashedUserKey"]);
+
+  prefs.setString("randKeyCipherText", encryptionValues["randKeyCipherText"]);
+  prefs.setString("randKeyNonce", encryptionValues["randKeyNonce"]);
+  prefs.setString("randKeyMAC", encryptionValues["randKeyMAC"]);
+
+  prefs.setBool("onboarded", true);
   /* --------------------- */
   // this section is simulating a user login. TESTING ONLY! REMOVE LATER!
   /*String userEnteredPin = "test";
@@ -99,7 +122,7 @@ Future<bool> _registerPIN(String pin) async {
   assert(clearTextStr.hashCode == randKeyBytesHexStr.hashCode);*/
   /* --------------------- */
 
-  await Future.delayed(const Duration(seconds: 5));
+  //await Future.delayed(const Duration(seconds: 5));
 
   return true;
 }
@@ -131,11 +154,13 @@ class _RegistrationLoadingPageState extends State<RegistrationLoadingPage> {
   }
 }
 
-void _submitForm(GlobalKey<FormState> key, BuildContext context, String pin) {
+void _submitRegistrationForm(
+    GlobalKey<FormState> key, BuildContext context, String pin) {
   if (key.currentState!.validate()) {
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => RegistrationLoadingPage(pin: pin)),
-        (route) => false);
+      MaterialPageRoute(builder: (_) => RegistrationLoadingPage(pin: pin)),
+      (route) => false,
+    );
   }
 }
 
@@ -204,12 +229,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 return null;
               },
               onFieldSubmitted: (value) {
-                _submitForm(_formKey, context, _firstPIN.text);
+                _submitRegistrationForm(_formKey, context, _firstPIN.text);
               },
             ),
             ElevatedButton(
               onPressed: () {
-                _submitForm(_formKey, context, _firstPIN.text);
+                _submitRegistrationForm(_formKey, context, _firstPIN.text);
                 /*if(_formKey.currentState!.validate()) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Processing data')),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'pages/HomePages.dart';
+import 'pages/LoginForm.dart';
 import 'pages/OnboardingPage.dart';
 import 'pages/SplashScreen.dart';
 
@@ -32,7 +32,7 @@ class YoursApp extends StatelessWidget {
             if (snapshot.data != false) {
               return const OnboardingPage(); // go to onboarding page
             }
-            return const HomePages(); // TODO goes to home now but make it go to login later
+            return const LoginPage();
           } else {
             return const SplashScreen();
           }
