@@ -83,7 +83,7 @@ Future<String> _getRandKey(HashMap inputs) async {
   return hex.encode(await loginAES.decrypt(storedBox, secretKey: inputs["userKey"]));
 }
 
-// returns true if match, false if not
+// returns box if match, Error if not
 Future<dynamic> _checkPinHash(String pin) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 

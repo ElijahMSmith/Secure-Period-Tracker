@@ -35,9 +35,8 @@ class YoursApp extends StatelessWidget {
         future: showOnboardingPage(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            // I **KNOW** that this looks stupid af, but you can't use snapshot.data as a conditional for null safety
-            if (snapshot.data != false) {
-              return const OnboardingPage(); // go to onboarding page
+            if (snapshot.data as bool) {
+              return const OnboardingPage();
             }
             return const LoginPage(isError: false);
           } else {

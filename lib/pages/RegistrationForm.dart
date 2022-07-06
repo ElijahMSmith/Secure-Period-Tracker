@@ -188,11 +188,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
             ElevatedButton(
               onPressed: () {
                 _submitRegistrationForm(_formKey, context, _firstPIN.text);
-                /*if(_formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing data')),
-                  );
-                }*/
               },
               child: const Text('Submit'),
             )

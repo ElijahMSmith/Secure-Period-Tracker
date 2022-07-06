@@ -11,13 +11,6 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage> {
   void _onOnboardingEnd(context) {
-    /*Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute<void>(
-        builder: (_) => const HomePages(), // TODO this is going to home rn but switch this to the reg screen
-      ),
-      (route) => false,
-    );*/
-
     Navigator.push(
       context,
       MaterialPageRoute(
