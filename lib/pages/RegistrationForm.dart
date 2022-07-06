@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cryptography/cryptography.dart';
+import 'package:hive/hive.dart';
 
 import 'HomePages.dart';
 import 'SplashScreen.dart';
@@ -16,8 +17,8 @@ Future<Map> _calculateEncryptionValues(String pin) async {
   // this should give us 256 bits? someone check my math
   final SecretKey randKey = SecretKey(
       List<int>.generate(32, (index) => Random.secure().nextInt(255)));
-  final String randKeyStr = hex.encode(await randKey.extractBytes());
-  values.putIfAbsent("randKey", () => randKeyStr);
+  final List<int> randKeyBytes = await randKey.extractBytes();
+  values.putIfAbsent("randKey", () => randKeyBytes);
 
   // utf8 or ascii here? I guess utf8 gives us a bigger PIN space?
   final SecretKey pinBytes = SecretKey(utf8.encode(pin));
@@ -60,12 +61,12 @@ Future<Map> _calculateEncryptionValues(String pin) async {
   return values;
 }
 
-Future<String> _registerPIN(String pin) async {
+Future<Box> _registerPIN(String pin) async {
   final encryptionValues = await compute(_calculateEncryptionValues, pin);
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  final randKeyBytesStr = encryptionValues["randKey"];
-  // TODO create sqflite_sqlcipher here with randKeyBytesStr
+  final List<int> randKeyBytes = encryptionValues["randKey"];
+  final calendarBox = await Hive.openBox('calendarBox', encryptionCipher: HiveAesCipher(randKeyBytes));
 
   prefs.setString("salt", encryptionValues["salt"]);
   prefs.setString("hashedUserKey", encryptionValues["hashedUserKey"]);
@@ -76,7 +77,7 @@ Future<String> _registerPIN(String pin) async {
 
   prefs.setBool("onboarded", true);
 
-  return encryptionValues["randKey"];
+  return calendarBox;
 }
 
 class RegistrationLoadingPage extends StatefulWidget {
@@ -99,7 +100,7 @@ class _RegistrationLoadingPageState extends State<RegistrationLoadingPage> {
         if (snapshot.data == null) {
           return const SplashScreen();
         } else {
-          return HomePages(sqlKey: snapshot.data.toString());
+          return HomePages(calendarBox: snapshot.data as Box);
         }
       },
     );

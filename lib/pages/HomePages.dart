@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 import 'CalendarTab.dart';
 import 'InsightsTab.dart';
 import 'SettingsTab.dart';
 
 class HomePages extends StatefulWidget {
-  final String sqlKey;
+  final Box calendarBox;
 
-  const HomePages({Key? key, required this.sqlKey}) : super(key: key);
+  const HomePages({Key? key, required this.calendarBox}) : super(key: key);
 
   @override
   State<HomePages> createState() => _HomePagesState();

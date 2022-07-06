@@ -5,6 +5,7 @@ import 'package:convert/convert.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'SplashScreen.dart';
 import 'HomePages.dart';
@@ -24,12 +25,12 @@ class _LoginLoadingPageState extends State<LoginLoadingPage> {
     return FutureBuilder(
       future: _checkPinHash(widget.pin),
       builder: (context, snapshot) {
-        if(snapshot.data == null) {
-          return const SplashScreen();
-        } else if(snapshot.data != "") {
-          return HomePages(sqlKey: snapshot.data.toString(),);
-        } else {
+        if(snapshot.data is Error){
           return const LoginPage(isError: true);
+        } else if(snapshot.data == null) {
+          return const SplashScreen();
+        } else {
+          return HomePages(calendarBox: snapshot.data as Box);
         }
       },
     );
@@ -83,7 +84,7 @@ Future<String> _getRandKey(HashMap inputs) async {
 }
 
 // returns true if match, false if not
-Future<String> _checkPinHash(String pin) async {
+Future<dynamic> _checkPinHash(String pin) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   HashMap values = HashMap();
@@ -94,7 +95,7 @@ Future<String> _checkPinHash(String pin) async {
   final storedHashedUserKey = prefs.getString("hashedUserKey")!;
 
   if (results["hash"] != storedHashedUserKey) {
-    return "";
+    return Error();
   }
 
   values.clear();
@@ -103,7 +104,11 @@ Future<String> _checkPinHash(String pin) async {
   values["nonce"] = prefs.getString("randKeyNonce");
   values["mac"] = prefs.getString("randKeyMAC");
 
-  return await compute(_getRandKey, values);
+  final String randKeyStr = await compute(_getRandKey, values);
+  final List<int> randKeyBytes = hex.decode(randKeyStr);
+
+  final calendarBox = await Hive.openBox('calendarBox', encryptionCipher: HiveAesCipher(randKeyBytes));
+  return calendarBox;
 }
 
 class LoginForm extends StatefulWidget {
