@@ -10,43 +10,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'SplashScreen.dart';
 import 'HomePages.dart';
 
-class LoginLoadingPage extends StatefulWidget {
-  final String pin;
-
-  const LoginLoadingPage({Key? key, required this.pin}) : super(key: key);
-
-  @override
-  State<LoginLoadingPage> createState() => _LoginLoadingPageState();
-}
-
-class _LoginLoadingPageState extends State<LoginLoadingPage> {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _checkPinHash(widget.pin),
-      builder: (context, snapshot) {
-        if(snapshot.data is Error){
-          return const LoginForm(isError: true);
-        } else if(snapshot.data == null) {
-          return const SplashScreen();
-        } else {
-          return HomePages(calendarBox: snapshot.data as Box);
-        }
-      },
-    );
-  }
-}
-
 void _submitLogin(GlobalKey<FormState> key, BuildContext context, String pin) {
   if (key.currentState!.validate()) {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => LoginLoadingPage(pin: pin)),
+      // MaterialPageRoute(builder: (_) => LoginLoadingPage(pin: pin)),
+      MaterialPageRoute(
+          builder: (_) => LoadingPage(
+                future: () => _checkPinHash(pin),
+                handleFinished: (Object data) {
+                  if (data is Error) {
+                    return const LoginForm(isError: true);
+                  } else {
+                    return HomePages(calendarBox: data as Box);
+                  }
+                },
+              )),
       (route) => false,
     );
   }
 }
 
-Future<HashMap> _calculatePinHash (HashMap values) async {
+Future<HashMap> _calculatePinHash(HashMap values) async {
   HashMap results = HashMap();
 
   final SecretKey pinBytes = SecretKey(utf8.encode(values["pin"]));
@@ -80,7 +64,8 @@ Future<String> _getRandKey(HashMap inputs) async {
   );
 
   final loginAES = AesGcm.with256bits();
-  return hex.encode(await loginAES.decrypt(storedBox, secretKey: inputs["userKey"]));
+  return hex
+      .encode(await loginAES.decrypt(storedBox, secretKey: inputs["userKey"]));
 }
 
 // returns box if match, Error if not
@@ -107,7 +92,8 @@ Future<dynamic> _checkPinHash(String pin) async {
   final String randKeyStr = await compute(_getRandKey, values);
   final List<int> randKeyBytes = hex.decode(randKeyStr);
 
-  final calendarBox = await Hive.openBox('calendarBox', encryptionCipher: HiveAesCipher(randKeyBytes));
+  final calendarBox = await Hive.openBox('calendarBox',
+      encryptionCipher: HiveAesCipher(randKeyBytes));
   return calendarBox;
 }
 
@@ -157,7 +143,9 @@ class _LoginFormState extends State<LoginForm> {
                   _submitLogin(_formKey, context, _pin.text);
                 },
                 decoration: InputDecoration(
-                  errorText: widget.isError ? "Incorrect PIN. Please try again." : null,
+                  errorText: widget.isError
+                      ? "Incorrect PIN. Please try again."
+                      : null,
                 ),
               ),
               ElevatedButton(

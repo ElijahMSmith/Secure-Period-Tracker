@@ -62,7 +62,8 @@ Future<Box> _registerPIN(String pin) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   final List<int> randKeyBytes = encryptionValues["randKey"];
-  final calendarBox = await Hive.openBox('calendarBox', encryptionCipher: HiveAesCipher(randKeyBytes));
+  final calendarBox = await Hive.openBox('calendarBox',
+      encryptionCipher: HiveAesCipher(randKeyBytes));
 
   prefs.setString("salt", encryptionValues["salt"]);
   prefs.setString("hashedUserKey", encryptionValues["hashedUserKey"]);
@@ -90,16 +91,9 @@ class RegistrationLoadingPage extends StatefulWidget {
 class _RegistrationLoadingPageState extends State<RegistrationLoadingPage> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _registerPIN(widget.pin),
-      builder: (context, snapshot) {
-        if (snapshot.data == null) {
-          return const SplashScreen();
-        } else {
-          return HomePages(calendarBox: snapshot.data as Box);
-        }
-      },
-    );
+    return LoadingPage(
+        future: () => _registerPIN(widget.pin),
+        handleFinished: (Object data) => HomePages(calendarBox: data as Box));
   }
 }
 
@@ -123,6 +117,7 @@ class RegistrationForm extends StatefulWidget {
 class _RegistrationFormState extends State<RegistrationForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstPIN = TextEditingController();
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -143,22 +138,16 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 autocorrect: false,
                 enableSuggestions: false,
                 enableIMEPersonalizedLearning: false,
-                // enableInteractiveSelection: true, // should be true if obscureText = true
-                // maxLines: 1, // defaults to 1
-                obscureText:
-                    true, // also disables stupid shit like gif and emoji keyboard
+                obscureText: _obscureText,
                 controller: _firstPIN,
                 autofocus: true,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a PIN';
-                  }
-                  return null;
-                },
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter a PIN'
+                    : null,
                 textInputAction: TextInputAction.next,
 
-                //keeping the input format stuff out for now; trusting people to not be dumbasses
+                //keeping the input format stuff out for now; trusting people instead
                 /*inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
                 ],*/
@@ -169,25 +158,28 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 autocorrect: false,
                 enableSuggestions: false,
                 enableIMEPersonalizedLearning: false,
-                obscureText: true,
+                obscureText: _obscureText,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 textInputAction: TextInputAction.go,
-                validator: (value) {
-                  if (value != _firstPIN.text) {
-                    return "PINs do not match!";
-                  }
-                  return null;
-                },
-                onFieldSubmitted: (value) {
-                  _submitRegistrationForm(_formKey, context, _firstPIN.text);
-                },
+                validator: (value) =>
+                    value != _firstPIN.text ? "PINs do not match!" : null,
+                onFieldSubmitted: (value) =>
+                    _submitRegistrationForm(_formKey, context, _firstPIN.text),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  _submitRegistrationForm(_formKey, context, _firstPIN.text);
-                },
-                child: const Text('Submit'),
-              )
+              Row(children: [
+                ElevatedButton(
+                  onPressed: () => _submitRegistrationForm(
+                      _formKey, context, _firstPIN.text),
+                  child: const Text('Submit'),
+                ),
+                Expanded(child: Container()),
+                Checkbox(
+                    value: !_obscureText,
+                    onChanged: (newValue) => setState(() {
+                          _obscureText = !_obscureText;
+                        })),
+                const Text('Show Password')
+              ])
             ],
           ),
         ),

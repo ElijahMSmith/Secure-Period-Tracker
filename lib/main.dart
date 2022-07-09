@@ -29,21 +29,24 @@ class YoursApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: _title,
-      home: FutureBuilder<bool>(
-        future: showOnboardingPage(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data as bool) {
-              return const OnboardingPage();
-            }
-            return const LoginForm(isError: false);
-          } else {
-            return const SplashScreen();
-          }
-        },
-      ),
-    );
+        debugShowCheckedModeBanner: false,
+        title: _title,
+        home: LoadingPage(
+          future: () => showOnboardingPage(),
+          handleFinished: (Object data) {
+            return data as bool
+                ? const OnboardingPage()
+                : const LoginForm(isError: false);
+          },
+        ));
   }
 }
+
+/*
+LoadingPage(
+  future: () => showOnboardingPage(),
+  handleFinished: (Object data) {
+    return const (snapshot.data as bool ? OnboardingPage() : LoginForm(isError: false);
+  },
+)
+*/
