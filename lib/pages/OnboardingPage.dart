@@ -14,7 +14,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const RegistrationPage(),
+        builder: (_) => const RegistrationForm(),
       ),
     );
   }

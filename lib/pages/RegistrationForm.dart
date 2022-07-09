@@ -128,86 +128,72 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Text(
-              "Enter a PIN:",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextFormField(
-              autocorrect: false,
-              enableSuggestions: false,
-              enableIMEPersonalizedLearning: false,
-              // enableInteractiveSelection: true, // should be true if obscureText = true
-              // maxLines: 1, // defaults to 1
-              obscureText:
-                  true, // also disables stupid shit like gif and emoji keyboard
-              controller: _firstPIN,
-              autofocus: true,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a PIN';
-                }
-                return null;
-              },
-              textInputAction: TextInputAction.next,
+    return Scaffold(
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Text(
+                "Enter a PIN:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              TextFormField(
+                autocorrect: false,
+                enableSuggestions: false,
+                enableIMEPersonalizedLearning: false,
+                // enableInteractiveSelection: true, // should be true if obscureText = true
+                // maxLines: 1, // defaults to 1
+                obscureText:
+                    true, // also disables stupid shit like gif and emoji keyboard
+                controller: _firstPIN,
+                autofocus: true,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a PIN';
+                  }
+                  return null;
+                },
+                textInputAction: TextInputAction.next,
 
-              //keeping the input format stuff out for now; trusting people to not be dumbasses
-              /*inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
-              ],*/
-            ),
-            const Text("Confirm your PIN:",
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            TextFormField(
-              autocorrect: false,
-              enableSuggestions: false,
-              enableIMEPersonalizedLearning: false,
-              obscureText: true,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              textInputAction: TextInputAction.go,
-              validator: (value) {
-                if (value != _firstPIN.text) {
-                  return "PINs do not match!";
-                }
-                return null;
-              },
-              onFieldSubmitted: (value) {
-                _submitRegistrationForm(_formKey, context, _firstPIN.text);
-              },
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _submitRegistrationForm(_formKey, context, _firstPIN.text);
-              },
-              child: const Text('Submit'),
-            )
-          ],
+                //keeping the input format stuff out for now; trusting people to not be dumbasses
+                /*inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
+                ],*/
+              ),
+              const Text("Confirm your PIN:",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              TextFormField(
+                autocorrect: false,
+                enableSuggestions: false,
+                enableIMEPersonalizedLearning: false,
+                obscureText: true,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                textInputAction: TextInputAction.go,
+                validator: (value) {
+                  if (value != _firstPIN.text) {
+                    return "PINs do not match!";
+                  }
+                  return null;
+                },
+                onFieldSubmitted: (value) {
+                  _submitRegistrationForm(_formKey, context, _firstPIN.text);
+                },
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _submitRegistrationForm(_formKey, context, _firstPIN.text);
+                },
+                child: const Text('Submit'),
+              )
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({Key? key}) : super(key: key);
-
-  @override
-  State<RegistrationPage> createState() => _RegistrationPageState();
-}
-
-class _RegistrationPageState extends State<RegistrationPage> {
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: RegistrationForm(),
     );
   }
 }
