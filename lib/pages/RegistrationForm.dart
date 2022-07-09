@@ -17,7 +17,7 @@ Future<Map> _calculateEncryptionValues(String pin) async {
   final SecretKey randKey = SecretKey(
       List<int>.generate(32, (index) => Random.secure().nextInt(255)));
   final List<int> randKeyBytes = await randKey.extractBytes();
-  values.putIfAbsent("randKey", () => randKeyBytes);
+  values["randKey"] = randKeyBytes;
 
   final SecretKey pinBytes = SecretKey(utf8.encode(pin));
 
@@ -30,7 +30,7 @@ Future<Map> _calculateEncryptionValues(String pin) async {
   final SecretKey salt = SecretKey(
       List<int>.generate(16, (index) => Random.secure().nextInt(255)));
   final String saltStr = hex.encode(await salt.extractBytes());
-  values.putIfAbsent("salt", () => saltStr);
+  values["salt"] = saltStr;
 
   final userKey = await pbkdf2.deriveKey(
     secretKey: pinBytes,
@@ -40,7 +40,7 @@ Future<Map> _calculateEncryptionValues(String pin) async {
   final sha512 = Sha512();
   final hashedUserKey = await sha512.hash(await userKey.extractBytes());
   final String hashedUserKeyStr = hex.encode(hashedUserKey.bytes);
-  values.putIfAbsent("hashedUserKey", () => hashedUserKeyStr);
+  values["hashedUserKey"] = hashedUserKeyStr;
 
   final aes256 = AesGcm.with256bits();
   final aesNonce = aes256.newNonce();
@@ -50,11 +50,9 @@ Future<Map> _calculateEncryptionValues(String pin) async {
     secretKey: userKey,
     nonce: aesNonce,
   );
-  values.putIfAbsent(
-      "randKeyCipherText", () => hex.encode(encryptedRandKey.cipherText));
-  values.putIfAbsent("randKeyNonce", () => hex.encode(encryptedRandKey.nonce));
-  values.putIfAbsent(
-      "randKeyMAC", () => hex.encode(encryptedRandKey.mac.bytes));
+  values["randKeyCipherText"] = hex.encode(encryptedRandKey.cipherText);
+  values["randKeyNonce"] = hex.encode(encryptedRandKey.nonce);
+  values["randKeyMAC"] = hex.encode(encryptedRandKey.mac.bytes);
 
   return values;
 }
