@@ -14,13 +14,11 @@ import 'SplashScreen.dart';
 Future<Map> _calculateEncryptionValues(String pin) async {
   HashMap values = HashMap();
 
-  // this should give us 256 bits? someone check my math
   final SecretKey randKey = SecretKey(
       List<int>.generate(32, (index) => Random.secure().nextInt(255)));
   final List<int> randKeyBytes = await randKey.extractBytes();
   values.putIfAbsent("randKey", () => randKeyBytes);
 
-  // utf8 or ascii here? I guess utf8 gives us a bigger PIN space?
   final SecretKey pinBytes = SecretKey(utf8.encode(pin));
 
   final pbkdf2 = Pbkdf2(
