@@ -15,11 +15,11 @@ class HomePages extends StatefulWidget {
 }
 
 class _HomePagesState extends State<HomePages> {
-  int _tabIndex = 0;
+  int _tabIndex = 1;
 
   static const List<Widget> _tabContent = <Widget>[
-    CalendarTab(),
     InsightsTab(),
+    CalendarTab(),
     SettingsTab(),
   ];
 
@@ -49,12 +49,12 @@ class _HomePagesState extends State<HomePages> {
         backgroundColor: Colors.black,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.lightbulb),
             label: 'Insights',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month),
+            label: 'Calendar',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
