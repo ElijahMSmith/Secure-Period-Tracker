@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'LoginForm.dart';
 import '../models/SettingsItem.dart';
 import 'AboutPage.dart';
 import 'CanaryPage.dart';
@@ -18,20 +20,43 @@ class _SettingsTabState extends State<SettingsTab> {
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(10.0),
-      children: const [
-        SettingsItem(
+      children: [
+        const SettingsItem(
           settingName: "About",
           pagePath: AboutPage(),
         ),
-        Divider(thickness: 3),
-        SettingsItem(
+        const Divider(thickness: 3),
+        const SettingsItem(
           settingName: "Canary",
           pagePath: CanaryPage(),
         ),
-        Divider(thickness: 3),
-        SettingsItem(
+        const Divider(thickness: 3),
+        const SettingsItem(
           settingName: "Disclaimers",
           pagePath: DisclaimersPage(),
+        ),
+        const Divider(thickness: 3),
+        ListTile(
+          title: const Text(
+            "Logout",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              color: Colors.red,
+            ),
+          ),
+          trailing: const Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.red,
+            semanticLabel: 'Select',
+          ),
+          onTap: () {
+            Hive.close();
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => const LoginForm(isError: false)),
+              (route) => false,
+            );
+          },
         ),
         Divider(thickness: 3),
       ],
