@@ -17,7 +17,7 @@ class _ContentTabState extends State<ContentTab> {
 
   int _contentIndex = 0;
   static final List<Widget> _content = <Widget>[
-    Calendar(),
+    Calendar(currentDate: DateTime.now()),
     Journal.withoutData(currentDate: DateTime.now())
   ];
 
