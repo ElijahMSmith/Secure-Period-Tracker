@@ -41,12 +41,3 @@ class YoursApp extends StatelessWidget {
         ));
   }
 }
-
-/*
-LoadingPage(
-  future: () => showOnboardingPage(),
-  handleFinished: (Object data) {
-    return const (snapshot.data as bool ? OnboardingPage() : LoginForm(isError: false);
-  },
-)
-*/

@@ -13,7 +13,6 @@ import 'HomePages.dart';
 void _submitLogin(GlobalKey<FormState> key, BuildContext context, String pin) {
   if (key.currentState!.validate()) {
     Navigator.of(context).pushAndRemoveUntil(
-      // MaterialPageRoute(builder: (_) => LoginLoadingPage(pin: pin)),
       MaterialPageRoute(
           builder: (_) => LoadingPage(
                 future: () => _checkPinHash(pin),
@@ -132,16 +131,12 @@ class _LoginFormState extends State<LoginForm> {
                 enableIMEPersonalizedLearning: false,
                 obscureText: true,
                 autofocus: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your PIN';
-                  }
-                  return null;
-                },
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter your PIN'
+                    : null,
                 textInputAction: TextInputAction.go,
-                onFieldSubmitted: (value) {
-                  _submitLogin(_formKey, context, _pin.text);
-                },
+                onFieldSubmitted: (value) =>
+                    _submitLogin(_formKey, context, _pin.text),
                 decoration: InputDecoration(
                   errorText: widget.isError
                       ? "Incorrect PIN. Please try again."
@@ -149,9 +144,7 @@ class _LoginFormState extends State<LoginForm> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
-                  _submitLogin(_formKey, context, _pin.text);
-                },
+                onPressed: () => _submitLogin(_formKey, context, _pin.text),
                 child: const Text('Log In'),
               )
             ],
