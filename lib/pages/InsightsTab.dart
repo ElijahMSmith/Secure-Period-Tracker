@@ -25,7 +25,7 @@ class _InsightsTabState extends State<InsightsTab> {
           ),
         ),
         Container(
-          // TODO can prolly extract this widget and pass color, icon, and text as params
+          // TODO can probably extract this widget and pass color, icon, and text as params
           margin: const EdgeInsets.all(10),
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
