@@ -26,7 +26,7 @@ class _LoginLoadingPageState extends State<LoginLoadingPage> {
       future: _checkPinHash(widget.pin),
       builder: (context, snapshot) {
         if(snapshot.data is Error){
-          return const LoginPage(isError: true);
+          return const LoginForm(isError: true);
         } else if(snapshot.data == null) {
           return const SplashScreen();
         } else {
@@ -126,66 +126,50 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Text(
-              "Enter PIN",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextFormField(
-              controller: _pin,
-              autocorrect: false,
-              enableSuggestions: false,
-              enableIMEPersonalizedLearning: false,
-              obscureText: true,
-              autofocus: true,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your PIN';
-                }
-                return null;
-              },
-              textInputAction: TextInputAction.go,
-              onFieldSubmitted: (value) {
-                _submitLogin(_formKey, context, _pin.text);
-              },
-              decoration: InputDecoration(
-                errorText: widget.isError ? "Incorrect PIN. Please try again." : null,
+    return Scaffold(
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Text(
+                "Enter PIN",
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _submitLogin(_formKey, context, _pin.text);
-              },
-              child: const Text('Log In'),
-            )
-          ],
+              TextFormField(
+                controller: _pin,
+                autocorrect: false,
+                enableSuggestions: false,
+                enableIMEPersonalizedLearning: false,
+                obscureText: true,
+                autofocus: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your PIN';
+                  }
+                  return null;
+                },
+                textInputAction: TextInputAction.go,
+                onFieldSubmitted: (value) {
+                  _submitLogin(_formKey, context, _pin.text);
+                },
+                decoration: InputDecoration(
+                  errorText: widget.isError ? "Incorrect PIN. Please try again." : null,
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _submitLogin(_formKey, context, _pin.text);
+                },
+                child: const Text('Log In'),
+              )
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class LoginPage extends StatefulWidget {
-  final bool isError;
-
-  const LoginPage({Key? key, required this.isError}) : super(key: key);
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: LoginForm(isError: widget.isError),
     );
   }
 }

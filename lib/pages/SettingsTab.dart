@@ -53,7 +53,7 @@ class _SettingsTabState extends State<SettingsTab> {
           onTap: () {
             Hive.close();
             Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (_) => const LoginPage(isError: false)),
+              MaterialPageRoute(builder: (_) => const LoginForm(isError: false)),
               (route) => false,
             );
           },

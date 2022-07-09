@@ -38,7 +38,7 @@ class YoursApp extends StatelessWidget {
             if (snapshot.data as bool) {
               return const OnboardingPage();
             }
-            return const LoginPage(isError: false);
+            return const LoginForm(isError: false);
           } else {
             return const SplashScreen();
           }
