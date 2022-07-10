@@ -35,7 +35,7 @@ class _DayNavBarState extends State<DayNavBar> {
     return Column(children: [
       const SizedBox(height: 30),
       Text(
-        months[widget.currentDate.month],
+        "${months[widget.currentDate.month]} ${widget.currentDate.year}",
         style: const TextStyle(fontSize: 30),
       ),
       const SizedBox(height: 10),
