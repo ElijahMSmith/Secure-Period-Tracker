@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/CalendarTab.dart';
+import 'pages/ContentTab.dart';
 import 'pages/SettingsTab.dart';
 import 'pages/InsightsTab.dart';
 
@@ -33,7 +33,7 @@ class _HomePagesState extends State<HomePages> {
   int _tabIndex = 0;
 
   static const List<Widget> _tabContent = <Widget>[
-    CalendarTab(),
+    ContentTab(),
     InsightsTab(),
     SettingsTab(),
   ];
