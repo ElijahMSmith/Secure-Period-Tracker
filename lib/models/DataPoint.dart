@@ -1,8 +1,8 @@
 class DataPoint {
   DateTime date = DateTime.now();
-  int dayOfCycle = 0; // 1, 2, ...
+  int? dayOfCycle; // 1, 2, ...
   Severity flow = Severity.unset; // LOW, MEDIUM, HIGH
-  int painLevel = 1; // 1-10
+  int painLevel = 0; // 0-10
 
   String? dischargeColor;
   String? dischargeConsistency;
