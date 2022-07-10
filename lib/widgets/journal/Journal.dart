@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:yours_app/models/DataPoint.dart';
 
 class Journal extends StatefulWidget {
-  DateTime currentDate;
+  final DateTime currentDate;
   DataPoint? data;
 
   Journal.withData({Key? key, required this.currentDate, this.data})
       : super(key: key);
   Journal.withoutData({Key? key, required this.currentDate}) : super(key: key);
 
-  void updateDay(DateTime newDate, DataPoint? newData) {
-    currentDate = newDate;
-    data = newData;
+  void addDataPoint(DataPoint data) {
+    this.data = data;
   }
 
   @override

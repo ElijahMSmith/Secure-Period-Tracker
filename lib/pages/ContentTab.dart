@@ -14,14 +14,9 @@ class ContentTab extends StatefulWidget {
 
 class _ContentTabState extends State<ContentTab> {
   DateTime _currentDate = DateTime.now();
-
   int _contentIndex = 0;
-  static final List<Widget> _content = <Widget>[
-    Calendar(currentDate: DateTime.now()),
-    Journal.withoutData(currentDate: DateTime.now())
-  ];
 
-  void setCurrentDate(DateTime newDate) {
+  void _setCurrentDate(DateTime newDate) {
     setState(() => _currentDate = newDate);
   }
 
@@ -30,7 +25,7 @@ class _ContentTabState extends State<ContentTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        DayNavBar(currentDate: _currentDate, setCurrentDate: setCurrentDate),
+        DayNavBar(currentDate: _currentDate, setCurrentDate: _setCurrentDate),
         Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -38,7 +33,7 @@ class _ContentTabState extends State<ContentTab> {
               Expanded(
                 flex: 2,
                 child: IconButton(
-                  onPressed: () => setCurrentDate(DateTime.now()),
+                  onPressed: () => _setCurrentDate(DateTime.now()),
                   icon: const Icon(Icons.autorenew),
                   iconSize: 40.0,
                 ),
@@ -50,7 +45,8 @@ class _ContentTabState extends State<ContentTab> {
                       child: TextButton.icon(
                           style: TextButton.styleFrom(
                               primary: Colors.white,
-                              backgroundColor: const Color.fromARGB(255, 0, 0, 0)),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 0, 0, 0)),
                           onPressed: () {
                             debugPrint("Log test");
                           },
@@ -75,7 +71,13 @@ class _ContentTabState extends State<ContentTab> {
               )
             ]),
         const SizedBox(height: 10),
-        Expanded(child: _content[_contentIndex])
+        Expanded(
+            child: _contentIndex == 0
+                ? Calendar(
+                    currentDate: _currentDate,
+                    setCurrentDate: _setCurrentDate,
+                  )
+                : Journal.withoutData(currentDate: DateTime.now()))
       ],
     );
   }

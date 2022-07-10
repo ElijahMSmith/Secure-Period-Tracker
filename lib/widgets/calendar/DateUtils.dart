@@ -1,5 +1,9 @@
 import 'package:intl/intl.dart';
 
+/*
+Source, with modification:
+https://github.com/pmcarlos/flutter_clean_calendar/blob/master/lib/date_utils.dart
+*/
 class Utils {
   static final DateFormat _monthFormat = DateFormat('MMMM yyyy');
   static final DateFormat _dayFormat = DateFormat('dd');
@@ -82,7 +86,7 @@ class Utils {
     var beginningNextMonth = (month.month < 12)
         ? DateTime(month.year, month.month + 1, 1)
         : DateTime(month.year + 1, 1, 1);
-    return beginningNextMonth.subtract(Duration(days: 1));
+    return beginningNextMonth.subtract(const Duration(days: 1));
   }
 
   /// Returns a [DateTime] for each day the given range.
@@ -94,7 +98,7 @@ class Utils {
     var offset = start.timeZoneOffset;
     while (i.isBefore(end)) {
       yield i;
-      i = i.add(Duration(days: 1));
+      i = i.add(const Duration(days: 1));
       var timeZoneDiff = i.timeZoneOffset - offset;
       if (timeZoneDiff.inSeconds != 0) {
         offset = i.timeZoneOffset;
@@ -150,11 +154,23 @@ class Utils {
     return DateTime(year, month);
   }
 
+  static DateTime nextYear(DateTime m) {
+    return DateTime(m.year + 1, m.month);
+  }
+
+  static DateTime previousYear(DateTime m) {
+    return DateTime(m.year - 1, m.month);
+  }
+
   static DateTime previousWeek(DateTime w) {
-    return w.subtract(Duration(days: 7));
+    return w.subtract(const Duration(days: 7));
   }
 
   static DateTime nextWeek(DateTime w) {
-    return w.add(Duration(days: 7));
+    return w.add(const Duration(days: 7));
+  }
+
+  static int compareDates(DateTime d1, DateTime d2) {
+    return apiDayFormat(d1).compareTo(apiDayFormat(d2));
   }
 }

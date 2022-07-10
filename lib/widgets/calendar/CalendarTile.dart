@@ -9,8 +9,8 @@ class CalendarTile extends StatelessWidget {
   final DateTime currentDate;
   final String dayOfWeek;
   final bool isHeader;
-  final bool inCurrentMonth;
-  final VoidCallback onDateSelected;
+  final bool inDisplayedMonth;
+  final VoidCallback? onDateSelected;
 
   const CalendarTile(
       {Key? key,
@@ -19,7 +19,7 @@ class CalendarTile extends StatelessWidget {
       required this.currentDate,
       required this.dayOfWeek,
       required this.isHeader,
-      required this.inCurrentMonth,
+      required this.inDisplayedMonth,
       required this.onDateSelected})
       : super(key: key);
 
@@ -43,13 +43,11 @@ class CalendarTile extends StatelessWidget {
       );
     } else {
       // Actual date tiles
-      int eventCount = 0;
       return InkWell(
         onTap: onDateSelected,
         child: Padding(
           padding: const EdgeInsets.all(1.0),
           child: Container(
-            // TODO: Draw colored circles based on data available, if any
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Utils.isSameDay(currentDate, date)
@@ -68,13 +66,14 @@ class CalendarTile extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                       // TODO: If we color the bubble, make this white
                       color:
-                          Utils.isSameDay(currentDate, date) || inCurrentMonth
+                          Utils.isSameDay(currentDate, date) || inDisplayedMonth
                               ? Colors.black
                               : Colors.grey),
                 ),
                 // Dots for the events
-                dataPoint != null && dataPoint!.hasItemsFromList() ||
-                        dataPoint!.isFilledOut()
+                dataPoint != null &&
+                        (dataPoint!.hasItemsFromList() ||
+                            dataPoint!.isFilledOut())
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -92,7 +91,3 @@ class CalendarTile extends StatelessWidget {
     }
   }
 }
-
-// Show a dot for each list that is populated
-// Color the back of the day if it has been filled out
-// Color current date background differently regardless of filled out status
