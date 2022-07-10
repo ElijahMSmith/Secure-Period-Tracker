@@ -6,9 +6,14 @@ import 'package:yours_app/widgets/calendar/GestureDetector.dart';
 class Calendar extends StatefulWidget {
   final DateTime currentDate;
   final void Function(DateTime) setCurrentDate;
+  final VoidCallback toggleShowingContent;
   bool _hasDateChanged = true;
 
-  Calendar({Key? key, required this.currentDate, required this.setCurrentDate})
+  Calendar(
+      {Key? key,
+      required this.currentDate,
+      required this.setCurrentDate,
+      required this.toggleShowingContent})
       : super(key: key);
 
   @override
@@ -39,12 +44,9 @@ class _CalendarState extends State<Calendar> {
           icon: const Icon(Icons.chevron_left),
         ),
         Expanded(
-          child: Container(
-            color: Colors.red,
-            child: Text(_monthDisplay,
-                style: const TextStyle(fontSize: 20.0),
-                textAlign: TextAlign.center),
-          ),
+          child: Text(_monthDisplay,
+              style: const TextStyle(fontSize: 20.0),
+              textAlign: TextAlign.center),
         ),
         IconButton(
           onPressed: nextMonth,
@@ -126,6 +128,7 @@ class _CalendarState extends State<Calendar> {
             onDateSelected: () {
               widget.setCurrentDate(day);
               setNewMonth(day);
+              widget.toggleShowingContent();
             }),
       );
     }

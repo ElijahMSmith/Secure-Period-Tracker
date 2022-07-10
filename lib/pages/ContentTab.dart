@@ -20,6 +20,10 @@ class _ContentTabState extends State<ContentTab> {
     setState(() => _currentDate = newDate);
   }
 
+  void _toggleShowingContent() {
+    setState(() => _contentIndex = (_contentIndex + 1) % 2);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -60,9 +64,7 @@ class _ContentTabState extends State<ContentTab> {
               Expanded(
                 flex: 2,
                 child: IconButton(
-                  onPressed: () => setState(() {
-                    _contentIndex = (_contentIndex + 1) % 2;
-                  }),
+                  onPressed: _toggleShowingContent,
                   icon: Icon(
                     _contentIndex == 0 ? Icons.book : Icons.calendar_month,
                   ),
@@ -76,6 +78,7 @@ class _ContentTabState extends State<ContentTab> {
                 ? Calendar(
                     currentDate: _currentDate,
                     setCurrentDate: _setCurrentDate,
+                    toggleShowingContent: _toggleShowingContent,
                   )
                 : Journal.withoutData(currentDate: DateTime.now()))
       ],
