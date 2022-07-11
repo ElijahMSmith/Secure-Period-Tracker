@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yours_app/widgets/IconInkwell.dart';
 import 'package:yours_app/widgets/calendar/DateUtils.dart';
 import 'package:yours_app/widgets/calendar/CalendarTile.dart';
 import 'package:yours_app/widgets/calendar/GestureDetector.dart';
@@ -35,27 +36,17 @@ class _CalendarState extends State<Calendar> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        IconButton(
-          onPressed: previousYear,
-          icon: const Icon(Icons.keyboard_double_arrow_left),
-        ),
-        IconButton(
-          onPressed: previousMonth,
-          icon: const Icon(Icons.chevron_left),
-        ),
+        IconInkwell(
+            onTap: previousYear, iconData: Icons.keyboard_double_arrow_left),
+        IconInkwell(onTap: previousMonth, iconData: Icons.chevron_left),
         Expanded(
           child: Text(_monthDisplay,
               style: const TextStyle(fontSize: 20.0),
               textAlign: TextAlign.center),
         ),
-        IconButton(
-          onPressed: nextMonth,
-          icon: const Icon(Icons.chevron_right),
-        ),
-        IconButton(
-          onPressed: nextYear,
-          icon: const Icon(Icons.keyboard_double_arrow_right),
-        )
+        IconInkwell(onTap: nextMonth, iconData: Icons.chevron_right),
+        IconInkwell(
+            onTap: nextYear, iconData: Icons.keyboard_double_arrow_right),
       ],
     );
   }

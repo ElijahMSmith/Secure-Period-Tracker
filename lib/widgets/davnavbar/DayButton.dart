@@ -39,7 +39,9 @@ class DayButton extends StatelessWidget {
               color: colors[position.abs()],
               fontSize: 20,
               fontWeight: FontWeight.w400),
-          backgroundColorOverride: const Color.fromARGB(255, 240, 233, 225)),
+          backgroundColorOverride: const Color.fromARGB(255, 240, 233, 225),
+          outsidePadding: 0.0,
+          insidePadding: 8.0),
       Text(
         abbreviation,
         textAlign: TextAlign.center,

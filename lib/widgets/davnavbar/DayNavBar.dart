@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yours_app/widgets/davnavbar/ArrowButton.dart';
+import 'package:yours_app/widgets/IconInkwell.dart';
 import 'package:yours_app/widgets/davnavbar/DayButton.dart';
 
 const months = [
@@ -40,8 +40,8 @@ class _DayNavBarState extends State<DayNavBar> {
       ),
       const SizedBox(height: 10),
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        ArrowButton(
-          direction: Direction.left,
+        IconInkwell(
+          iconData: Icons.arrow_back_ios_rounded,
           onTap: () {
             widget.setCurrentDate(
                 widget.currentDate.subtract(const Duration(days: 1)));
@@ -54,8 +54,8 @@ class _DayNavBarState extends State<DayNavBar> {
                   isCurrentDate: i == 0,
                   setCurrentDate: widget.setCurrentDate,
                   position: i)),
-        ArrowButton(
-          direction: Direction.right,
+        IconInkwell(
+          iconData: Icons.arrow_forward_ios_rounded,
           onTap: () {
             widget.setCurrentDate(
                 widget.currentDate.add(const Duration(days: 1)));

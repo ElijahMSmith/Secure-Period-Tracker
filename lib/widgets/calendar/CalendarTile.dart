@@ -12,6 +12,8 @@ class CalendarTile extends StatelessWidget {
   final VoidCallback? onDateSelected;
   final TextStyle? textStyleOverride;
   final Color? backgroundColorOverride;
+  final double? outsidePadding;
+  final double? insidePadding;
 
   const CalendarTile(
       {Key? key,
@@ -22,7 +24,9 @@ class CalendarTile extends StatelessWidget {
       this.inDisplayedMonth = true,
       this.onDateSelected,
       this.textStyleOverride,
-      this.backgroundColorOverride})
+      this.backgroundColorOverride,
+      this.outsidePadding,
+      this.insidePadding})
       : super(key: key);
 
   Widget buildDot(Color color) {
@@ -49,50 +53,53 @@ class CalendarTile extends StatelessWidget {
       return InkWell(
         onTap: onDateSelected,
         customBorder: const CircleBorder(),
-        child: Container(
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: isCurrentDate
-                    ? Border.all(color: Colors.blue, width: 2)
-                    : null,
-                color: backgroundColorOverride ??
-                    (dataPoint != null && dataPoint!.isFilledOut()
-                        ? Colors.orange
-                        : Colors.white)),
-            alignment: Alignment.center,
-            child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      "${date.day}",
-                      style: textStyleOverride ??
-                          TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w400,
-                              // TODO: If we color the bubble, make this white
-                              color: isCurrentDate || inDisplayedMonth
-                                  ? Colors.black
-                                  : Colors.grey),
-                    ),
-                    // Dots for the events
-                    dataPoint != null &&
-                            (dataPoint!.hasItemsFromList() ||
-                                dataPoint!.isFilledOut())
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                                if (dataPoint!.hasEmotions())
-                                  buildDot(Colors.blue),
-                                if (dataPoint!.hasSymptoms())
-                                  buildDot(Colors.red),
-                                if (dataPoint!.hasSexualActivities())
-                                  buildDot(Colors.purple),
-                              ])
-                        : Container(),
-                  ],
-                ))),
+        child: Padding(
+          padding: EdgeInsets.all(outsidePadding ?? 2.0),
+          child: Container(
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: isCurrentDate
+                      ? Border.all(color: Colors.blue, width: 2)
+                      : null,
+                  color: backgroundColorOverride ??
+                      (dataPoint != null && dataPoint!.isFilledOut()
+                          ? Colors.orange
+                          : Colors.white)),
+              alignment: Alignment.center,
+              child: Padding(
+                  padding: EdgeInsets.all(insidePadding ?? 5.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "${date.day}",
+                        style: textStyleOverride ??
+                            TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w400,
+                                // TODO: If we color the bubble, make this white
+                                color: isCurrentDate || inDisplayedMonth
+                                    ? Colors.black
+                                    : Colors.grey),
+                      ),
+                      // Dots for the events
+                      dataPoint != null &&
+                              (dataPoint!.hasItemsFromList() ||
+                                  dataPoint!.isFilledOut())
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                  if (dataPoint!.hasEmotions())
+                                    buildDot(Colors.blue),
+                                  if (dataPoint!.hasSymptoms())
+                                    buildDot(Colors.red),
+                                  if (dataPoint!.hasSexualActivities())
+                                    buildDot(Colors.purple),
+                                ])
+                          : Container(),
+                    ],
+                  ))),
+        ),
       );
     }
   }

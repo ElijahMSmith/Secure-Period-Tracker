@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yours_app/widgets/IconInkwell.dart';
 import 'package:yours_app/widgets/journal/Journal.dart';
 import 'package:yours_app/widgets/calendar/Calendar.dart';
 import 'package:yours_app/widgets/davnavbar/DayNavBar.dart';
@@ -35,13 +36,12 @@ class _ContentTabState extends State<ContentTab> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                flex: 2,
-                child: IconButton(
-                  onPressed: () => _setCurrentDate(DateTime.now()),
-                  icon: const Icon(Icons.autorenew),
-                  iconSize: 40.0,
-                ),
-              ),
+                  flex: 2,
+                  child: IconInkwell(
+                    onTap: () => _setCurrentDate(DateTime.now()),
+                    iconData: Icons.autorenew,
+                    iconSize: 40.0,
+                  )),
               Expanded(
                   flex: 6,
                   child: Padding(
@@ -62,15 +62,13 @@ class _ContentTabState extends State<ContentTab> {
                             style: TextStyle(fontSize: 18),
                           )))),
               Expanded(
-                flex: 2,
-                child: IconButton(
-                  onPressed: _toggleShowingContent,
-                  icon: Icon(
-                    _contentIndex == 0 ? Icons.book : Icons.calendar_month,
-                  ),
-                  iconSize: 40.0,
-                ),
-              )
+                  flex: 2,
+                  child: IconInkwell(
+                    onTap: _toggleShowingContent,
+                    iconData:
+                        _contentIndex == 0 ? Icons.book : Icons.calendar_month,
+                    iconSize: 40.0,
+                  )),
             ]),
         const SizedBox(height: 10),
         Expanded(
