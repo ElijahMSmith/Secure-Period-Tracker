@@ -1,7 +1,7 @@
 class DataPoint {
-  DateTime date = DateTime.now();
+  DateTime date;
   int? dayOfCycle; // 1, 2, ...
-  Severity? flow; // LOW, MEDIUM, HIGH
+  Level? flow; // LOW, MEDIUM, HIGH
   int? painLevel; // 1-10
 
   String? dischargeColor;
@@ -11,11 +11,13 @@ class DataPoint {
   // TODO: Define what options from each we can have for each
   List<String>? emotions;
   List<String>? symptoms;
-  List<String>? sexualActivity;
+  SexualActivity? sexualActivity;
 
-  DataPoint();
-  DataPoint.withData(
-      this.date,
+  late int id;
+  static int staticID = 0;
+
+  DataPoint(
+      {required this.date,
       this.dayOfCycle,
       this.flow,
       this.painLevel,
@@ -24,7 +26,10 @@ class DataPoint {
       this.dischargeSmells,
       this.emotions,
       this.symptoms,
-      this.sexualActivity);
+      this.sexualActivity}) {
+    id = DataPoint.staticID;
+    DataPoint.staticID++;
+  }
 
   bool isFilledOut() {
     return notNull(dayOfCycle) ||
@@ -44,19 +49,28 @@ class DataPoint {
   }
 
   bool hasEmotions() {
-    return emotions != null && emotions!.isNotEmpty;
+    return notNull(emotions) && emotions!.isNotEmpty;
   }
 
   bool hasSymptoms() {
-    return emotions != null && emotions!.isNotEmpty;
+    return notNull(symptoms) && symptoms!.isNotEmpty;
   }
 
   bool hasSexualActivities() {
-    return emotions != null && emotions!.isNotEmpty;
+    return notNull(sexualActivity);
   }
 }
 
-enum Severity { unset, low, medium, high }
+enum Level { none, low, medium, high }
+
+enum SexualActivity {
+  none,
+  protectedSex,
+  unprotectedSex,
+  masturbation,
+  highSexDrive,
+  lowSexDrive
+}
 
 const dischargeColors = [
   "Clear",
@@ -72,4 +86,3 @@ const dischargeConsistencies = ["Normal", "Thick", "Frothy", "Cloudy"];
 
 const emotions = [];
 const symptoms = [];
-const sexualActivities = [];

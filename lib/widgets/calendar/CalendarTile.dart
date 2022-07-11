@@ -31,10 +31,19 @@ class CalendarTile extends StatelessWidget {
 
   Widget buildDot(Color color) {
     return Container(
-        margin: const EdgeInsets.only(left: 2.0, right: 2.0, top: 1.0),
-        width: 5.0,
-        height: 5.0,
+        margin: const EdgeInsets.only(left: 1, right: 1),
+        width: 6.0,
+        height: 6.0,
         decoration: BoxDecoration(shape: BoxShape.circle, color: color));
+  }
+
+  List<Widget> buildDots(DataPoint dataPoint) {
+    final List<Widget> dots = [];
+    if (dataPoint.hasEmotions()) dots.add(buildDot(Colors.blue));
+    if (dataPoint.hasSymptoms()) dots.add(buildDot(Colors.red));
+    if (dataPoint.hasSexualActivities()) dots.add(buildDot(Colors.purple));
+    debugPrint("point = ${dataPoint.id}, len = ${dots.length}");
+    return dots;
   }
 
   @override
@@ -78,24 +87,20 @@ class CalendarTile extends StatelessWidget {
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w400,
                                 // TODO: If we color the bubble, make this white
-                                color: isCurrentDate || inDisplayedMonth
-                                    ? Colors.black
-                                    : Colors.grey),
+                                color: dataPoint != null &&
+                                        dataPoint!.isFilledOut()
+                                    ? (inDisplayedMonth
+                                        ? Colors.black
+                                        : Colors.white)
+                                    : (inDisplayedMonth
+                                        ? Colors.black
+                                        : Colors.grey)),
                       ),
                       // Dots for the events
-                      dataPoint != null &&
-                              (dataPoint!.hasItemsFromList() ||
-                                  dataPoint!.isFilledOut())
+                      dataPoint != null && dataPoint!.hasItemsFromList()
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                  if (dataPoint!.hasEmotions())
-                                    buildDot(Colors.blue),
-                                  if (dataPoint!.hasSymptoms())
-                                    buildDot(Colors.red),
-                                  if (dataPoint!.hasSexualActivities())
-                                    buildDot(Colors.purple),
-                                ])
+                              children: buildDots(dataPoint!))
                           : Container(),
                     ],
                   ))),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yours_app/models/DataPoint.dart';
 import 'package:yours_app/widgets/IconInkwell.dart';
 import 'package:yours_app/widgets/calendar/DateUtils.dart';
 import 'package:yours_app/widgets/calendar/CalendarTile.dart';
@@ -65,6 +66,7 @@ class _CalendarState extends State<Calendar> {
           primary: false,
           shrinkWrap: true,
           crossAxisCount: 7,
+          mainAxisSpacing: 2,
           children: calendarBuilder(),
         ),
       ]),
@@ -96,6 +98,9 @@ class _CalendarState extends State<Calendar> {
     final calendarDays = Utils.daysInRange(
         Utils.firstDayOfWeek(monthStart), Utils.lastDayOfWeek(monthEnd));
 
+    // Temporary counter until we remove dummy points
+    int i = 0;
+
     for (var day in calendarDays) {
       if (day.hour > 0) {
         day = day.toLocal();
@@ -112,16 +117,22 @@ class _CalendarState extends State<Calendar> {
 
       dayWidgets.add(
         CalendarTile(
-            date: day,
-            isCurrentDate: Utils.isSameDay(day, widget.currentDate),
-            isHeader: false,
-            inDisplayedMonth: monthStarted && !monthEnded,
-            onDateSelected: () {
-              widget.setCurrentDate(day);
-              setNewMonth(day);
-              widget.toggleShowingContent();
-            }),
+          dataPoint: dummyPoints[i % 5],
+          date: day,
+          isCurrentDate: Utils.isSameDay(day, widget.currentDate),
+          isHeader: false,
+          inDisplayedMonth: monthStarted && !monthEnded,
+          onDateSelected: () {
+            widget.setCurrentDate(day);
+            setNewMonth(day);
+            widget.toggleShowingContent();
+          },
+          outsidePadding: 0.0,
+          insidePadding: 5.0,
+        ),
       );
+
+      i++;
     }
     return dayWidgets;
   }
@@ -170,3 +181,58 @@ class _CalendarState extends State<Calendar> {
     });
   }
 }
+
+// TEMP
+
+DataPoint dummyPoint1 = DataPoint(
+    date: DateTime.now(),
+    dayOfCycle: 5,
+    flow: Level.medium,
+    painLevel: 3,
+    dischargeColor: dischargeColors[1],
+    dischargeConsistency: dischargeConsistencies[1],
+    dischargeSmells: true,
+    emotions: ["Sad", "Anxious", "Angry"],
+    symptoms: ["Bloating", "Abdominal Cramps", "Pelvic Pain"],
+    sexualActivity: SexualActivity.unprotectedSex);
+
+DataPoint dummyPoint2 = DataPoint(
+    date: DateTime.now(),
+    dayOfCycle: 6,
+    flow: Level.low,
+    painLevel: 5,
+    dischargeColor: dischargeColors[2],
+    dischargeConsistency: dischargeConsistencies[0],
+    dischargeSmells: false,
+    symptoms: ["Bloating", "Abdominal Cramps", "Pelvic Pain"],
+    sexualActivity: SexualActivity.unprotectedSex);
+
+DataPoint dummyPoint3 = DataPoint(
+    date: DateTime.now(),
+    dayOfCycle: 7,
+    flow: Level.none,
+    painLevel: 10,
+    dischargeColor: dischargeColors[1],
+    dischargeConsistency: dischargeConsistencies[1],
+    dischargeSmells: false,
+    sexualActivity: SexualActivity.unprotectedSex);
+
+DataPoint dummyPoint4 = DataPoint(
+  date: DateTime.now(),
+  dayOfCycle: 8,
+  flow: Level.high,
+  painLevel: 7,
+  dischargeColor: dischargeColors[0],
+  dischargeConsistency: dischargeConsistencies[0],
+  dischargeSmells: true,
+);
+
+DataPoint? dummyPoint5;
+
+List<DataPoint?> dummyPoints = [
+  dummyPoint1,
+  dummyPoint2,
+  dummyPoint3,
+  dummyPoint4,
+  dummyPoint5
+];
