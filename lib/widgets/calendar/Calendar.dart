@@ -84,16 +84,17 @@ class _CalendarState extends State<Calendar> {
     List<Widget> dayWidgets = [];
     DateTime now = DateTime.now();
 
-    for (var day in Utils.weekdays) {
+    DateTime date = Utils.firstDayOfWeek(now);
+    for (int i = 0; i < 7; i++) {
       dayWidgets.add(
         CalendarTile(
-            date: now,
-            currentDate: widget.currentDate,
-            dayOfWeek: day,
-            isHeader: true,
-            inDisplayedMonth: true,
-            onDateSelected: null),
+          date: date,
+          isCurrentDate: Utils.isSameDay(widget.currentDate, date),
+          isHeader: true,
+          inDisplayedMonth: true,
+        ),
       );
+      date.add(const Duration(days: 1));
     }
 
     bool monthStarted = false;
@@ -121,8 +122,7 @@ class _CalendarState extends State<Calendar> {
       dayWidgets.add(
         CalendarTile(
             date: day,
-            currentDate: widget.currentDate,
-            dayOfWeek: Utils.weekdays[day.weekday % 7],
+            isCurrentDate: Utils.isSameDay(day, widget.currentDate),
             isHeader: false,
             inDisplayedMonth: monthStarted && !monthEnded,
             onDateSelected: () {

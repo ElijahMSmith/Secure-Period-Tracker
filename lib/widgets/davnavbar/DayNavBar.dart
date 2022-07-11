@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yours_app/widgets/davnavbar/ArrowButton.dart';
 import 'package:yours_app/widgets/davnavbar/DayButton.dart';
 
 const months = [
@@ -31,7 +32,6 @@ class DayNavBar extends StatefulWidget {
 class _DayNavBarState extends State<DayNavBar> {
   @override
   Widget build(BuildContext context) {
-    final arrowSize = MediaQuery.of(context).size.width / 10;
     return Column(children: [
       const SizedBox(height: 30),
       Text(
@@ -40,31 +40,27 @@ class _DayNavBarState extends State<DayNavBar> {
       ),
       const SizedBox(height: 10),
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        IconButton(
-          onPressed: () {
+        ArrowButton(
+          direction: Direction.left,
+          onTap: () {
             widget.setCurrentDate(
                 widget.currentDate.subtract(const Duration(days: 1)));
           },
-          icon: const Icon(
-            Icons.chevron_left,
-          ),
-          iconSize: arrowSize,
         ),
         for (int i = -2; i <= 2; i++)
           Expanded(
               child: DayButton(
                   date: widget.currentDate.add(Duration(days: i)),
+                  isCurrentDate: i == 0,
                   setCurrentDate: widget.setCurrentDate,
                   position: i)),
-        IconButton(
-            onPressed: () {
-              widget.setCurrentDate(
-                  widget.currentDate.add(const Duration(days: 1)));
-            },
-            icon: const Icon(
-              Icons.chevron_right,
-            ),
-            iconSize: arrowSize),
+        ArrowButton(
+          direction: Direction.right,
+          onTap: () {
+            widget.setCurrentDate(
+                widget.currentDate.add(const Duration(days: 1)));
+          },
+        ),
       ]),
       const SizedBox(height: 10),
     ]);
