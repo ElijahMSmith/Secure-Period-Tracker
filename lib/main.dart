@@ -22,8 +22,7 @@ class YoursApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: _title,
-      theme: ThemeData(
-          scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255)),
+      theme: ThemeData(scaffoldBackgroundColor: Colors.white),
       home: const HomePages(),
     );
   }
