@@ -70,7 +70,6 @@ class _ContentTabState extends State<ContentTab> {
                     iconSize: 40.0,
                   )),
             ]),
-        const SizedBox(height: 10),
         Expanded(
             child: _contentIndex == 0
                 ? Calendar(

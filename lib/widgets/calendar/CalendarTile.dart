@@ -42,7 +42,6 @@ class CalendarTile extends StatelessWidget {
     if (dataPoint.hasEmotions()) dots.add(buildDot(Colors.blue));
     if (dataPoint.hasSymptoms()) dots.add(buildDot(Colors.red));
     if (dataPoint.hasSexualActivities()) dots.add(buildDot(Colors.purple));
-    debugPrint("point = ${dataPoint.id}, len = ${dots.length}");
     return dots;
   }
 
@@ -68,7 +67,7 @@ class CalendarTile extends StatelessWidget {
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: isCurrentDate
-                      ? Border.all(color: Colors.blue, width: 2)
+                      ? Border.all(color: Colors.blue, width: 4)
                       : null,
                   color: backgroundColorOverride ??
                       (dataPoint != null && dataPoint!.isFilledOut()

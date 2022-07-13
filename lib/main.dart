@@ -19,10 +19,12 @@ class YoursApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: _title,
-      home: HomePages(),
+      theme: ThemeData(
+          scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255)),
+      home: const HomePages(),
     );
   }
 }

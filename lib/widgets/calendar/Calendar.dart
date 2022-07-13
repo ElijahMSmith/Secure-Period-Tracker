@@ -60,16 +60,15 @@ class _CalendarState extends State<Calendar> {
         horizontalThreshold: 40.0,
         swipeDetectionMoment: SwipeDetectionMoment.onUpdate,
       ),
-      child: Column(children: <Widget>[
-        GridView.count(
-          childAspectRatio: 1.5,
-          primary: false,
-          shrinkWrap: true,
-          crossAxisCount: 7,
-          mainAxisSpacing: 2,
-          children: calendarBuilder(),
-        ),
-      ]),
+      child: GridView.count(
+        padding: EdgeInsets.zero,
+        primary: false,
+        shrinkWrap: true,
+        crossAxisCount: 7,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 5,
+        children: calendarBuilder(),
+      ),
     );
   }
 
@@ -143,11 +142,7 @@ class _CalendarState extends State<Calendar> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        const SizedBox(height: 15),
-        nameAndIconRow,
-        calendarGridView
-      ],
+      children: <Widget>[nameAndIconRow, calendarGridView],
     );
   }
 
