@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'pages/ContentTab.dart';
 import 'pages/SettingsTab.dart';
 import 'pages/InsightsTab.dart';
@@ -14,10 +15,15 @@ class YoursApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: _title,
-      home: HomePages(),
+      theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+      home: const HomePages(),
     );
   }
 }
